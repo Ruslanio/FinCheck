@@ -24,3 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "FinCheck"
 include(":app")
+include(":core:data")
+include(":core:ui")
