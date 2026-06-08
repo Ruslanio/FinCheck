@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.financetracker.feature.auth.ui.LoginScreen
 
 sealed class Destination(val route: String) {
     data object Login : Destination("login")
@@ -21,7 +22,7 @@ fun AppNavGraph() {
         startDestination = Destination.Home.route,
     ) {
         composable(Destination.Login.route) {
-            Box(modifier = Modifier.fillMaxSize())
+            LoginScreen()
         }
         composable(Destination.Home.route) {
             Box(modifier = Modifier.fillMaxSize())

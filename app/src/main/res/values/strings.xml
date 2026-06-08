@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FinCheck</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
+    <string name="label_login">Log in</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_password_too_short">Password must be at least 8 characters</string>
+    <string name="cd_toggle_password_visibility">Toggle password visibility</string>
 </resources>
