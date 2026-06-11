@@ -56,6 +56,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
             supportingText = emailError,
         )
         Spacer(modifier = Modifier.height(8.dp))
+
         PasswordInputField(
             value = viewModel.password,
             onValueChange = { viewModel.password = it },
@@ -66,6 +67,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
             supportingText = passwordError,
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         PrimaryButton(
             text = stringResource(R.string.label_login),
             onClick = viewModel::onLoginClick,
@@ -74,11 +76,16 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
         )
         if (screenError != null) {
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = screenError,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-            )
+            ErrorMessage(screenError = screenError)
         }
     }
+}
+
+@Composable
+private fun ErrorMessage(screenError: String) {
+    Text(
+        text = screenError,
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.bodySmall,
+    )
 }
