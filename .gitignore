@@ -18,17 +18,12 @@ local.properties
 *.keystore
 signingReport/
 
-# Android Studio / IntelliJ
+# Android Studio / IntelliJ — ignore everything except shared config
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/assetWizardSettings.xml
-.idea/navEditor.xml
-.idea/caches/
-.idea/libraries/
-.idea/modules.xml
-.idea/deploymentTargetSelector.xml
+.idea/*
+!.idea/vcs.xml
+!.idea/inspectionProfiles/
+!.idea/runConfigurations.xml
 
 # External native build
 .externalNativeBuild/
@@ -43,6 +38,7 @@ google-services.json
 
 # macOS
 .DS_Store
+**/.DS_Store
 
 # Logs
 *.log
