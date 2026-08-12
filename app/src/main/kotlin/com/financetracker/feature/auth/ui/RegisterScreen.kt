@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,42 +29,47 @@ import com.financetracker.core.ui.components.PrimaryButton
 import com.financetracker.navigation.Destination
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = hiltViewModel(),
+    viewModel: RegisterViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    val registerSuccessMsg = navController.currentBackStackEntry
-        ?.savedStateHandle
-        ?.getStateFlow<String?>("register_success_msg", null)
-        ?.collectAsStateWithLifecycle()
-        ?.value
+    val snackbarHostState = remember { SnackbarHostState() }
+    val accountCreatedMsg = stringResource(R.string.msg_account_created)
 
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.Success) {
-            navController.navigate(Destination.Home.route) {
-                popUpTo(Destination.Login.route) { inclusive = true }
-            }
+            navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.set("register_success_msg", accountCreatedMsg)
+            navController.popBackStack()
         }
     }
 
     val emailError = (uiState as? AuthUiState.Error)
         ?.message
-        ?.takeIf { it == LoginViewModel.ERROR_EMAIL_REQUIRED }
+        ?.takeIf { it == RegisterViewModel.ERROR_EMAIL_REQUIRED }
         ?.let { stringResource(R.string.error_email_required) }
 
     val passwordError = (uiState as? AuthUiState.Error)
         ?.message
-        ?.takeIf { it == LoginViewModel.ERROR_PASSWORD_TOO_SHORT }
+        ?.takeIf { it == RegisterViewModel.ERROR_PASSWORD_TOO_SHORT }
         ?.let { stringResource(R.string.error_password_too_short) }
 
-    val screenError = (uiState as? AuthUiState.Error)
+    val confirmPasswordError = (uiState as? AuthUiState.Error)
         ?.message
+        ?.takeIf { it == RegisterViewModel.ERROR_PASSWORDS_DO_NOT_MATCH }
+        ?.let { stringResource(R.string.error_passwords_do_not_match) }
+
+    val screenError = (uiState as? AuthUiState.Error)?.message
         ?.takeIf {
-            it !in setOf(LoginViewModel.ERROR_EMAIL_REQUIRED, LoginViewModel.ERROR_PASSWORD_TOO_SHORT)
+            it !in setOf(
+                RegisterViewModel.ERROR_EMAIL_REQUIRED,
+                RegisterViewModel.ERROR_PASSWORD_TOO_SHORT,
+                RegisterViewModel.ERROR_PASSWORDS_DO_NOT_MATCH,
+            )
         }
-        ?.let { code -> mapLoginErrorCode(code) }
+        ?.let { code -> mapRegisterErrorCode(code) }
 
     Column(
         modifier = Modifier
@@ -71,15 +78,6 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        if (registerSuccessMsg != null) {
-            Text(
-                text = registerSuccessMsg,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
         EmailInputField(
             value = viewModel.email,
             onValueChange = { viewModel.email = it },
@@ -99,11 +97,22 @@ fun LoginScreen(
             isError = passwordError != null,
             supportingText = passwordError,
         )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        PasswordInputField(
+            value = viewModel.confirmPassword,
+            onValueChange = { viewModel.confirmPassword = it },
+            label = stringResource(R.string.label_confirm_password),
+            togglePasswordVisibilityContentDescription = stringResource(R.string.cd_toggle_password_visibility),
+            modifier = Modifier.fillMaxWidth(),
+            isError = confirmPasswordError != null,
+            supportingText = confirmPasswordError,
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryButton(
-            text = stringResource(R.string.label_login),
-            onClick = viewModel::onLoginClick,
+            text = stringResource(R.string.label_create_account),
+            onClick = viewModel::onRegisterClick,
             modifier = Modifier.fillMaxWidth(),
             isLoading = uiState is AuthUiState.Loading,
         )
@@ -118,16 +127,17 @@ fun LoginScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { navController.navigate(Destination.Register.route) }) {
-            Text(stringResource(R.string.label_register))
+        TextButton(onClick = { navController.popBackStack() }) {
+            Text(stringResource(R.string.label_already_have_account))
         }
     }
 }
 
 @Composable
-private fun mapLoginErrorCode(code: String): String =
+private fun mapRegisterErrorCode(code: String): String =
     when (code) {
         "error_invalid_credentials" -> stringResource(R.string.error_invalid_credentials)
         "error_network" -> stringResource(R.string.error_network)
+        "error_email_already_registered" -> stringResource(R.string.error_email_already_registered)
         else -> code
     }
