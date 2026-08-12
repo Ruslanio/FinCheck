@@ -2,8 +2,14 @@ import java.util.Properties
 
 val localProps =
     Properties().apply {
-        load(rootProject.file("local.properties").inputStream())
+        val file = rootProject.file("local.properties")
+        if (file.exists()) load(file.inputStream())
     }
+
+fun localProp(key: String): String =
+    localProps[key]?.toString()
+        ?: System.getenv(key)
+        ?: error("Missing required property: $key (set in local.properties or as env var)")
 
 plugins {
     alias(libs.plugins.android.application)
@@ -27,7 +33,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"${localProps["BASE_URL"]}\"")
+        buildConfigField("String", "BASE_URL", "\"${localProp("BASE_URL")}\"")
     }
 
     buildTypes {

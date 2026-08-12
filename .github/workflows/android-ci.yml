@@ -19,6 +19,7 @@ jobs:
         -Dorg.gradle.daemon=false
         -Dorg.gradle.workers.max=2
         -Dkotlin.incremental=false
+      BASE_URL: ${{ secrets.BASE_URL }}
 
     steps:
       - name: Checkout
@@ -37,6 +38,9 @@ jobs:
 
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
+
+      - name: Create local.properties
+        run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
       - name: ktlint check
         run: ./gradlew ktlintCheck
