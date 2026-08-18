@@ -31,6 +31,10 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="@string/androidx_startup"
+                tools:node="remove" />
+            <meta-data
                 android:name="com.financetracker.work.WorkManagerInitializer"
                 android:value="@string/androidx_startup" />
         </provider>
