@@ -12,7 +12,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,29 +20,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.financetracker.R
 import com.financetracker.core.ui.components.EmailInputField
 import com.financetracker.core.ui.components.PasswordInputField
 import com.financetracker.core.ui.components.PrimaryButton
-import com.financetracker.navigation.Destination
 
 @Composable
 fun RegisterScreen(
-    navController: NavHostController,
+    navigateToLogin: (msg: String) -> Unit,
+    onBackClick: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val accountCreatedMsg = stringResource(R.string.msg_account_created)
 
-    LaunchedEffect(uiState) {
-        if (uiState is AuthUiState.Success) {
-            navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.set("register_success_msg", accountCreatedMsg)
-            navController.popBackStack()
-        }
+    if (uiState is AuthUiState.Success) {
+        navigateToLogin(accountCreatedMsg)
     }
 
     val emailError = (uiState as? AuthUiState.Error)
@@ -127,7 +120,7 @@ fun RegisterScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { navController.popBackStack() }) {
+        TextButton(onClick = onBackClick) {
             Text(stringResource(R.string.label_already_have_account))
         }
     }

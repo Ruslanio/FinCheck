@@ -40,7 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -53,7 +52,6 @@ import com.financetracker.feature.transactions.components.TransactionSkeleton
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionListScreen(
-    navController: NavController,
     viewModel: TransactionListViewModel = hiltViewModel(),
 ) {
     val lazyPagingItems = viewModel.transactions.collectAsLazyPagingItems()

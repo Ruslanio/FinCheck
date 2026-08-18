@@ -18,22 +18,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.financetracker.R
-import com.financetracker.navigation.Destination
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
+    navigateToTransaction: () -> Unit,
+    navigateToAuth: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val loggedOut by viewModel.loggedOut.collectAsStateWithLifecycle()
 
     LaunchedEffect(loggedOut) {
         if (loggedOut) {
-            navController.navigate(Destination.Login.route) {
-                popUpTo(0) { inclusive = true }
-            }
+//            navController.navigate(Destination.Login.route) {
+//                popUpTo(0) { inclusive = true }
+//            }
+            navigateToAuth.invoke()
         }
     }
 
@@ -45,7 +45,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center,
     ) {
         Button(
-            onClick = { navController.navigate(Destination.Transactions.route) },
+            onClick = navigateToTransaction,
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(stringResource(R.string.label_view_transactions))
