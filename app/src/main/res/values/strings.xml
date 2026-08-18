@@ -16,4 +16,19 @@
     <string name="error_email_already_registered">An account with this email already exists</string>
     <string name="error_passwords_do_not_match">Passwords do not match</string>
     <string name="msg_account_created">Account created — please log in</string>
+
+    <!-- Transaction list screen -->
+    <string name="label_view_transactions">View transactions</string>
+    <string name="label_add_transaction">Add transaction</string>
+    <string name="label_amount">Amount</string>
+    <string name="label_category">Category</string>
+    <string name="label_description_optional">Description (optional)</string>
+    <string name="msg_transaction_added">Transaction added</string>
+    <string name="msg_already_recorded">Already recorded</string>
+    <string name="msg_no_transactions">No transactions yet</string>
+    <string name="msg_failed_to_load">Failed to load transactions</string>
+    <string name="label_retry">Retry</string>
+    <string name="error_invalid_amount">Enter a valid amount</string>
+    <string name="error_category_required">Select a category</string>
+    <string name="cd_add_transaction">Add transaction</string>
 </resources>

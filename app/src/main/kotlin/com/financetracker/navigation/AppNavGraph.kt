@@ -8,11 +8,13 @@ import androidx.navigation.compose.rememberNavController
 import com.financetracker.feature.auth.ui.LoginScreen
 import com.financetracker.feature.auth.ui.RegisterScreen
 import com.financetracker.feature.home.ui.HomeScreen
+import com.financetracker.feature.transactions.TransactionListScreen
 
 sealed class Destination(val route: String) {
     data object Login : Destination("login")
     data object Register : Destination("register")
     data object Home : Destination("home")
+    data object Transactions : Destination("transactions")
 }
 
 @Composable
@@ -34,6 +36,9 @@ fun AppNavGraph() {
         }
         composable(Destination.Home.route) {
             HomeScreen(navController = navController)
+        }
+        composable(Destination.Transactions.route) {
+            TransactionListScreen(navController = navController)
         }
     }
 }
