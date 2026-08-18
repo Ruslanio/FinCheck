@@ -31,13 +31,29 @@ class TokenStorage(
         prefs.edit()
             .remove(KEY_ACCESS_TOKEN)
             .remove(KEY_REFRESH_TOKEN)
+            .remove(KEY_USER_ID)
             .apply()
     }
 
     fun hasValidToken(): Boolean = getAccessToken() != null
 
+    fun saveUserId(userId: String) {
+        prefs.edit().putString(KEY_USER_ID, userId).apply()
+    }
+
+    fun getUserId(): String? = prefs.getString(KEY_USER_ID, null)
+
+    fun getUserIdFromToken(token: String): String? = runCatching {
+        val parts = token.split(".")
+        val payload = String(
+            android.util.Base64.decode(parts[1], android.util.Base64.URL_SAFE),
+        )
+        org.json.JSONObject(payload).getString("sub")
+    }.getOrNull()
+
     private companion object {
         const val KEY_ACCESS_TOKEN = "access_token"
         const val KEY_REFRESH_TOKEN = "refresh_token"
+        const val KEY_USER_ID = "user_id"
     }
 }

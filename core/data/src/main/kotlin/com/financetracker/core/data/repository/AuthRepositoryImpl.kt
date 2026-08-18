@@ -24,6 +24,8 @@ class AuthRepositoryImpl @Inject constructor(
                     response.isSuccessful -> {
                         val body = checkNotNull(response.body())
                         tokenStorage.saveTokens(body.accessToken, body.refreshToken)
+                        val userId = tokenStorage.getUserIdFromToken(body.accessToken)
+                        if (userId != null) tokenStorage.saveUserId(userId)
                         AuthResult.Success
                     }
                     response.code() == 401 -> AuthResult.Error("error_invalid_credentials")

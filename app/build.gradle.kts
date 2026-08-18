@@ -78,6 +78,11 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.startup)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
