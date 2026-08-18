@@ -2,43 +2,50 @@ package com.financetracker.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.financetracker.feature.auth.ui.LoginScreen
-import com.financetracker.feature.auth.ui.RegisterScreen
-import com.financetracker.feature.home.ui.HomeScreen
-import com.financetracker.feature.transactions.TransactionListScreen
+import com.financetracker.feature.auth.navigation.AuthGraph
+import com.financetracker.feature.auth.navigation.authGraph
+import com.financetracker.feature.auth.navigation.navigateToAuth
+import com.financetracker.feature.home.navigation.HomeGraph
+import com.financetracker.feature.home.navigation.homeGraph
+import com.financetracker.feature.home.navigation.navigateToHome
+import com.financetracker.feature.transactions.navigation.navigateToTransaction
+import com.financetracker.feature.transactions.navigation.transactionScreen
 
-sealed class Destination(val route: String) {
-    data object Login : Destination("login")
-    data object Register : Destination("register")
-    data object Home : Destination("home")
-    data object Transactions : Destination("transactions")
-}
 
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
     val startupViewModel: StartupViewModel = hiltViewModel()
     val startDestination =
-        if (startupViewModel.hasValidToken()) Destination.Home.route else Destination.Login.route
+        if (startupViewModel.hasValidToken()) HomeGraph else AuthGraph
 
+    FinanceCheckNavHost(
+        navController = navController,
+        startDestination = startDestination
+    )
+}
+
+@Composable
+fun FinanceCheckNavHost(
+    navController: NavHostController,
+    startDestination: Any
+) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
-        composable(Destination.Login.route) {
-            LoginScreen(navController = navController)
-        }
-        composable(Destination.Register.route) {
-            RegisterScreen(navController = navController)
-        }
-        composable(Destination.Home.route) {
-            HomeScreen(navController = navController)
-        }
-        composable(Destination.Transactions.route) {
-            TransactionListScreen(navController = navController)
-        }
+        authGraph(
+            navController = navController,
+            navigateToHome = { navController.navigateToHome() },
+            onBackClick = { navController.popBackStack() }
+        )
+        homeGraph(
+            navigateToTransaction = { navController.navigateToTransaction() },
+            navigateToAuth = { navController.navigateToAuth() }
+        )
+        transactionScreen()
     }
 }

@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,32 +18,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.financetracker.R
 import com.financetracker.core.ui.components.EmailInputField
 import com.financetracker.core.ui.components.PasswordInputField
 import com.financetracker.core.ui.components.PrimaryButton
-import com.financetracker.navigation.Destination
 
 @Composable
 fun LoginScreen(
-    navController: NavHostController,
+    registerSuccessMessage: String?,
+    navigateToRegister: () -> Unit,
+    navigateToHome: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val registerSuccessMsg = navController.currentBackStackEntry
-        ?.savedStateHandle
-        ?.getStateFlow<String?>("register_success_msg", null)
-        ?.collectAsStateWithLifecycle()
-        ?.value
-
-    LaunchedEffect(uiState) {
-        if (uiState is AuthUiState.Success) {
-            navController.navigate(Destination.Home.route) {
-                popUpTo(Destination.Login.route) { inclusive = true }
-            }
-        }
+    if (uiState is AuthUiState.Success) {
+        navigateToHome.invoke()
     }
 
     val emailError = (uiState as? AuthUiState.Error)
@@ -60,7 +49,10 @@ fun LoginScreen(
     val screenError = (uiState as? AuthUiState.Error)
         ?.message
         ?.takeIf {
-            it !in setOf(LoginViewModel.ERROR_EMAIL_REQUIRED, LoginViewModel.ERROR_PASSWORD_TOO_SHORT)
+            it !in setOf(
+                LoginViewModel.ERROR_EMAIL_REQUIRED,
+                LoginViewModel.ERROR_PASSWORD_TOO_SHORT
+            )
         }
         ?.let { code -> mapLoginErrorCode(code) }
 
@@ -71,9 +63,9 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        if (registerSuccessMsg != null) {
+        registerSuccessMessage?.let {
             Text(
-                text = registerSuccessMsg,
+                text = it,
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -118,7 +110,7 @@ fun LoginScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { navController.navigate(Destination.Register.route) }) {
+        TextButton(onClick = navigateToRegister) {
             Text(stringResource(R.string.label_register))
         }
     }
