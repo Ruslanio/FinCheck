@@ -2,6 +2,7 @@ package com.financetracker.di
 
 import com.financetracker.BuildConfig
 import com.financetracker.core.data.network.AuthApiService
+import com.financetracker.data.network.TransactionApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -53,4 +54,9 @@ object NetworkModule {
     @Singleton
     fun provideAuthApiService(retrofit: Retrofit): AuthApiService =
         retrofit.create(AuthApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTransactionApiService(retrofit: Retrofit): TransactionApiService =
+        retrofit.create(TransactionApiService::class.java)
 }
