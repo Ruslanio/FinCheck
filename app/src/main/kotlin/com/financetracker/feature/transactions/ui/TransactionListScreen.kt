@@ -1,4 +1,4 @@
-package com.financetracker.feature.transactions
+package com.financetracker.feature.transactions.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

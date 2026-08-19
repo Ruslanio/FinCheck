@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.financetracker.feature.transactions.TransactionListScreen
+import com.financetracker.feature.transactions.ui.TransactionListScreen
 
 const val ROUTE_TRANSACTION = "ROUTE_TRANSACTION"
 

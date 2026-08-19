@@ -1,12 +1,12 @@
-package com.financetracker.feature.transactions
+package com.financetracker.feature.transactions.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.financetracker.data.model.TransactionUiModel
 import com.financetracker.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -18,8 +18,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import java.util.UUID
+import javax.inject.Inject
 
 @HiltViewModel
 class TransactionListViewModel @Inject constructor(

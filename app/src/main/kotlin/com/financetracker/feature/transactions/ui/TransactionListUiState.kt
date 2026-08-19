@@ -1,4 +1,4 @@
-package com.financetracker.feature.transactions
+package com.financetracker.feature.transactions.ui
 
 import com.financetracker.data.model.TransactionUiModel
 
