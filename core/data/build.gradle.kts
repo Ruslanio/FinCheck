@@ -6,10 +6,10 @@ plugins {
 
 android {
     namespace = "com.financetracker.core.data"
-    compileSdk = 35
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 26
+        minSdk = libs.versions.minSdk.get().toInt()
     }
 
     compileOptions {
@@ -30,6 +30,9 @@ ksp {
 }
 
 dependencies {
+    api(project(":core:database"))
+    api(project(":core:network"))
+
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)

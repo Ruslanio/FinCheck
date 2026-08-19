@@ -1,14 +1,14 @@
 package com.financetracker.navigation
 
 import androidx.lifecycle.ViewModel
-import com.financetracker.core.data.storage.TokenStorage
+import com.financetracker.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class StartupViewModel @Inject constructor(
-    private val tokenStorage: TokenStorage,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    fun hasValidToken(): Boolean = tokenStorage.hasValidToken()
+    fun isUserLoggedIn(): Boolean = authRepository.isUserLoggedIn()
 }

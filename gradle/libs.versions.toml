@@ -1,4 +1,8 @@
 [versions]
+minSdk = "26"
+compileSdk = "35"
+targetSdk = "35"
+
 agp = "9.2.1"
 kotlin = "2.2.10"
 ksp = "2.2.10-2.0.2"
@@ -28,6 +32,7 @@ testCore = "1.6.1"
 paging = "3.3.6"
 workManager = "2.10.1"
 startup = "1.2.0"
+material = "1.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -74,6 +79,7 @@ androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref 
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltNavigationCompose" }
 androidx-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
 androidx-compose-material = { group = "androidx.compose.material", name = "material" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,8 +1,8 @@
 package com.financetracker.feature.auth
 
 import app.cash.turbine.test
-import com.financetracker.core.data.repository.AuthRepository
-import com.financetracker.core.data.repository.AuthResult
+import com.financetracker.data.repository.AuthRepository
+import com.financetracker.data.repository.AuthResult
 import com.financetracker.feature.auth.ui.AuthUiState
 import com.financetracker.feature.auth.ui.LoginViewModel
 import io.mockk.coEvery
