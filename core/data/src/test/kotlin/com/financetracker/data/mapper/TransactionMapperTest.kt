@@ -1,13 +1,13 @@
 package com.financetracker.data.mapper
 
-import com.financetracker.data.local.entity.TransactionEntity
-import com.financetracker.data.network.dto.TransactionResponseDto
-import java.time.Instant
+import com.rumir.database.entity.TransactionEntity
+import com.rumir.network.dto.TransactionResponseDto
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Instant
 
 class TransactionMapperTest {
 

@@ -1,10 +1,10 @@
 package com.financetracker.data.repository
 
 import app.cash.turbine.test
-import com.financetracker.data.local.dao.TransactionDao
-import com.financetracker.data.network.TransactionApiService
-import com.financetracker.data.network.dto.TransactionResponseDto
 import com.financetracker.data.storage.TokenStorage
+import com.rumir.database.dao.TransactionDao
+import com.rumir.network.dto.TransactionResponseDto
+import com.rumir.network.service.TransactionApiService
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
