@@ -32,4 +32,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
+
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.junit)
 }
