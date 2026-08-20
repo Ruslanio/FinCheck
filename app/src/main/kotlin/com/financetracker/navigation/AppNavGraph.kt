@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.financetracker.feature.auth.navigation.AuthGraph
 import com.financetracker.feature.auth.navigation.authGraph
 import com.financetracker.feature.auth.navigation.navigateToAuth
-import com.financetracker.feature.home.navigation.HomeGraph
+import com.financetracker.feature.home.navigation.HomeRoute
 import com.financetracker.feature.home.navigation.homeGraph
 import com.financetracker.feature.home.navigation.navigateToHome
 import com.financetracker.feature.transactions.navigation.navigateToTransaction
@@ -20,7 +20,7 @@ fun AppNavGraph() {
     val navController = rememberNavController()
     val startupViewModel: StartupViewModel = hiltViewModel()
     val startDestination =
-        if (startupViewModel.isUserLoggedIn()) HomeGraph else AuthGraph
+        if (startupViewModel.isUserLoggedIn()) HomeRoute else AuthGraph
 
     FinanceCheckNavHost(
         navController = navController,

@@ -5,15 +5,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.financetracker.feature.transactions.ui.TransactionListScreen
+import kotlinx.serialization.Serializable
 
-const val ROUTE_TRANSACTION = "ROUTE_TRANSACTION"
+@Serializable
+object TransactionRoute
 
 fun NavController.navigateToTransaction(navOptions: NavOptions? = null) {
-    this.navigate(ROUTE_TRANSACTION, navOptions)
+    this.navigate(TransactionRoute, navOptions)
 }
 
 fun NavGraphBuilder.transactionScreen() {
-    composable(route = ROUTE_TRANSACTION) {
+    composable<TransactionRoute> {
         TransactionListScreen()
     }
 }

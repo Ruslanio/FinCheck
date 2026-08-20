@@ -44,6 +44,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.financetracker.R
+import com.financetracker.core.ui.util.nestedScaffoldInsets
 import com.financetracker.feature.transactions.components.AddTransactionSheet
 import com.financetracker.feature.transactions.components.CategoryChips
 import com.financetracker.feature.transactions.components.TransactionRow
@@ -72,10 +73,12 @@ fun TransactionListScreen(
                     showAddSheet = false
                     snackbarHostState.showSnackbar(msgTransactionAdded)
                 }
+
                 is AddTransactionEvent.Duplicate -> {
                     showAddSheet = false
                     snackbarHostState.showSnackbar(msgAlreadyRecorded)
                 }
+
                 is AddTransactionEvent.Error -> snackbarHostState.showSnackbar(event.message)
                 AddTransactionEvent.NetworkError -> snackbarHostState.showSnackbar(msgNoConnection)
             }
@@ -83,6 +86,7 @@ fun TransactionListScreen(
     }
 
     Scaffold(
+        contentWindowInsets = nestedScaffoldInsets(),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddSheet = true }) {
