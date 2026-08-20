@@ -56,4 +56,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.androidx.security.crypto)
+
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.junit)
 }
