@@ -1,8 +1,8 @@
 package com.financetracker.data.mapper
 
-import com.financetracker.data.local.entity.TransactionEntity
 import com.financetracker.data.model.TransactionUiModel
-import com.financetracker.data.network.dto.TransactionResponseDto
+import com.rumir.database.entity.TransactionEntity
+import com.rumir.network.dto.TransactionResponseDto
 import java.time.Instant
 
 object TransactionMapper {

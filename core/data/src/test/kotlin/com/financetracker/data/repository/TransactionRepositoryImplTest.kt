@@ -1,23 +1,23 @@
 package com.financetracker.data.repository
 
 import app.cash.turbine.test
-import com.financetracker.core.data.storage.TokenStorage
-import com.financetracker.data.local.dao.TransactionDao
-import com.financetracker.data.network.TransactionApiService
-import com.financetracker.data.network.dto.TransactionResponseDto
+import com.financetracker.data.storage.TokenStorage
+import com.rumir.database.dao.TransactionDao
+import com.rumir.network.dto.TransactionResponseDto
+import com.rumir.network.service.TransactionApiService
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import java.io.IOException
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
+import java.io.IOException
 
 class TransactionRepositoryImplTest {
 

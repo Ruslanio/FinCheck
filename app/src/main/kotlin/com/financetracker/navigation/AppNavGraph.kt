@@ -20,7 +20,7 @@ fun AppNavGraph() {
     val navController = rememberNavController()
     val startupViewModel: StartupViewModel = hiltViewModel()
     val startDestination =
-        if (startupViewModel.hasValidToken()) HomeGraph else AuthGraph
+        if (startupViewModel.isUserLoggedIn()) HomeGraph else AuthGraph
 
     FinanceCheckNavHost(
         navController = navController,
