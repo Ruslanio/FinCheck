@@ -1,6 +1,5 @@
 package com.financetracker.ui.bottombar
 
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -17,9 +16,9 @@ fun MainBarNavHost(
     mainNavController: NavHostController
 ) {
     NavHost(
+        modifier = modifier,
         navController = mainNavController,
         startDestination = HomeRoute,
-        modifier = modifier.systemBarsPadding(),
     ) {
         homeScreen()
         transactionScreen()
