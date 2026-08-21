@@ -4,15 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.financetracker.feature.auth.navigation.AuthGraph
-import com.financetracker.feature.auth.navigation.authGraph
-import com.financetracker.feature.auth.navigation.navigateToAuth
-import com.financetracker.feature.home.navigation.HomeRoute
-import com.financetracker.feature.home.navigation.homeGraph
-import com.financetracker.feature.home.navigation.navigateToHome
-import com.financetracker.feature.transactions.navigation.navigateToTransaction
-import com.financetracker.feature.transactions.navigation.transactionScreen
+import com.financetracker.auth.navigation.AuthGraph
+import com.financetracker.auth.navigation.authGraph
+import com.financetracker.auth.navigation.navigateToAuth
+import com.financetracker.auth.navigation.navigateToLogin
+import com.financetracker.auth.navigation.navigateToRegister
+import com.financetracker.ui.StartupViewModel
+import com.financetracker.ui.bottombar.MainGraph
+import com.financetracker.ui.bottombar.MainScreen
+import com.financetracker.ui.bottombar.navigateToMain
 
 
 @Composable
@@ -20,7 +22,7 @@ fun AppNavGraph() {
     val navController = rememberNavController()
     val startupViewModel: StartupViewModel = hiltViewModel()
     val startDestination =
-        if (startupViewModel.isUserLoggedIn()) HomeRoute else AuthGraph
+        if (startupViewModel.isUserLoggedIn()) MainGraph else AuthGraph
 
     FinanceCheckNavHost(
         navController = navController,
@@ -38,14 +40,15 @@ fun FinanceCheckNavHost(
         startDestination = startDestination,
     ) {
         authGraph(
-            navController = navController,
-            navigateToHome = { navController.navigateToHome() },
+            navigateToRegister = { navController.navigateToRegister() },
+            navigateToLogin = { navController.navigateToLogin(it) },
+            navigateToHome = { navController.navigateToMain() },
             onBackClick = { navController.popBackStack() }
         )
-        homeGraph(
-            navigateToTransaction = { navController.navigateToTransaction() },
-            navigateToAuth = { navController.navigateToAuth() }
-        )
-        transactionScreen()
+        composable<MainGraph> {
+            MainScreen(
+                navigateToAuth = { navController.navigateToAuth() }
+            )
+        }
     }
 }

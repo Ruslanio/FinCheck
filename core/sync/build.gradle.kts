@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.rumir.sync"
+    namespace = "com.financetracker.sync"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

@@ -36,6 +36,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:transactions"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:profile"))
+
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
     implementation(project(":core:sync"))
