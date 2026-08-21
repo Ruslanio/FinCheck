@@ -1,4 +1,4 @@
-package com.financetracker.ui.bottombar
+package com.financetracker.ui.main.navigation
 
 import androidx.navigation.NavController
 import kotlinx.serialization.Serializable

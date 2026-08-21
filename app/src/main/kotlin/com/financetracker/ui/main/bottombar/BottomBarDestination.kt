@@ -1,4 +1,4 @@
-package com.financetracker.ui.bottombar
+package com.financetracker.ui.main.bottombar
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons

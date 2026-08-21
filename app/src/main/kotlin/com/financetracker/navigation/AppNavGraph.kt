@@ -12,9 +12,9 @@ import com.financetracker.auth.navigation.navigateToAuth
 import com.financetracker.auth.navigation.navigateToLogin
 import com.financetracker.auth.navigation.navigateToRegister
 import com.financetracker.ui.StartupViewModel
-import com.financetracker.ui.bottombar.MainGraph
-import com.financetracker.ui.bottombar.MainScreen
-import com.financetracker.ui.bottombar.navigateToMain
+import com.financetracker.ui.main.MainScreen
+import com.financetracker.ui.main.navigation.MainGraph
+import com.financetracker.ui.main.navigation.navigateToMain
 
 
 @Composable

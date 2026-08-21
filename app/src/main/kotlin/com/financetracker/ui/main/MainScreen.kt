@@ -1,4 +1,4 @@
-package com.financetracker.ui.bottombar
+package com.financetracker.ui.main
 
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +12,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.financetracker.ui.main.bottombar.FinCheckBottomBar
+import com.financetracker.ui.main.bottombar.getBottomBarDestinations
+import com.financetracker.ui.main.navigation.MainBarNavHost
 
 @Composable
 fun MainScreen(
