@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.rumir.database"
+    namespace = "com.financetracker.database"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Transaction list screen -->
+    <string name="label_view_transactions">View transactions</string>
+    <string name="label_add_transaction">Add transaction</string>
+    <string name="label_amount">Amount</string>
+    <string name="label_category">Category</string>
+    <string name="label_description_optional">Description (optional)</string>
+    <string name="msg_transaction_added">Transaction added</string>
+    <string name="msg_already_recorded">Already recorded</string>
+    <string name="msg_no_transactions">No transactions yet</string>
+    <string name="msg_failed_to_load">Failed to load transactions</string>
+    <string name="label_retry">Retry</string>
+    <string name="error_invalid_amount">Enter a valid amount</string>
+    <string name="error_category_required">Select a category</string>
+    <string name="cd_add_transaction">Add transaction</string>
+
+    <string name="error_network">No connection — check your network</string>
+</resources>
+

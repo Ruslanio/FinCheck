@@ -3,7 +3,7 @@ package com.financetracker
 import android.app.Application
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import com.rumir.sync.work.SyncTransactionsWorker
+import com.financetracker.sync.work.SyncTransactionsWorker
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

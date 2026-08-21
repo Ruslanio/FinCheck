@@ -18,7 +18,7 @@ fun localProp(key: String): String =
         ?: error("Missing required property: $key (set in local.properties or as env var)")
 
 android {
-    namespace = "com.rumir.network"
+    namespace = "com.financetracker.network"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     buildFeatures {
