@@ -9,6 +9,7 @@ Jetpack Compose personal finance tracker app. Offline-first, MVI architecture, b
 - `:core:database`      — Room DB, DAOs, entities only — no repositories here
 - `:core:network`       — Retrofit interfaces, DTOs only — no repositories here
 - `:core:sync`          — WorkManager workers only — no repositories here
+- `:core:security`      — BiometricAuthManager, AppLockViewModel, AppLockScreen; biometric gate
 - `:core:ui`            — Shared composables, design tokens, theme
 - `:feature:auth`            — Login/Register screens + AuthNavigation
 - `:feature:home`            — Home screen + HomeNavigation
@@ -30,6 +31,12 @@ CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
     ) { ... }
 }
 ```
+
+## Biometric auth gate
+- `AppLockViewModel` evaluates whether to show the prompt; `MainActivity` calls `showBiometricPrompt()` which creates `BiometricPrompt` (requires `FragmentActivity` — `MainActivity` extends `AppCompatActivity` for this reason).
+- **Never** call `setNegativeButtonText` on `PromptInfo` when `DEVICE_CREDENTIAL` is in `allowedAuthenticators` — causes `IllegalArgumentException` at runtime on all API levels.
+- `AppLockScreen` overlay sits above the `NavHost` in Z-order (Box with NavHost first, overlay second).
+- The 30-second grace period is checked via `backgroundTimestamp` set in `onPause()`, not a timer.
 
 ## Module boundaries — critical rules
 - Repositories live exclusively in `:core:data`. Never create a repository in `:core:database`, `:core:network`, or `:core:sync`.
