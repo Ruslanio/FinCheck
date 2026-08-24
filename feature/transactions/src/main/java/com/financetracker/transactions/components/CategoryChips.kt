@@ -21,11 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-
-val TRANSACTION_CATEGORIES = listOf(
-    "Food", "Transport", "Shopping", "Health",
-    "Entertainment", "Housing", "Income", "Other",
-)
+import com.financetracker.feature.addtransaction.TRANSACTION_CATEGORIES
 
 internal fun categoryIcon(category: String): ImageVector =
     when (category.lowercase()) {
