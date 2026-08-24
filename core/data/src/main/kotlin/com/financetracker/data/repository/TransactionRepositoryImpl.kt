@@ -8,9 +8,9 @@ import androidx.paging.map
 import com.financetracker.data.mapper.TransactionMapper
 import com.financetracker.data.model.TransactionUiModel
 import com.financetracker.data.storage.TokenStorage
-import com.rumir.database.dao.TransactionDao
-import com.rumir.network.dto.CreateTransactionRequestDto
-import com.rumir.network.service.TransactionApiService
+import com.financetracker.database.dao.TransactionDao
+import com.financetracker.network.dto.CreateTransactionRequestDto
+import com.financetracker.network.service.TransactionApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow

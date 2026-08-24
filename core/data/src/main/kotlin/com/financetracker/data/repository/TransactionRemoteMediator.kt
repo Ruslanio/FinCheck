@@ -6,9 +6,9 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.financetracker.data.mapper.TransactionMapper
 import com.financetracker.data.storage.TokenStorage
-import com.rumir.database.dao.TransactionDao
-import com.rumir.database.entity.TransactionEntity
-import com.rumir.network.service.TransactionApiService
+import com.financetracker.database.dao.TransactionDao
+import com.financetracker.database.entity.TransactionEntity
+import com.financetracker.network.service.TransactionApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

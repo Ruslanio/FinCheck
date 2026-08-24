@@ -1,11 +1,11 @@
 package com.financetracker.data.repository
 
 import com.financetracker.data.storage.TokenStorage
-import com.rumir.network.dto.ErrorResponseDto
-import com.rumir.network.dto.LoginRequestDto
-import com.rumir.network.dto.LogoutRequestDto
-import com.rumir.network.dto.RegisterRequestDto
-import com.rumir.network.service.AuthApiService
+import com.financetracker.network.dto.ErrorResponseDto
+import com.financetracker.network.dto.LoginRequestDto
+import com.financetracker.network.dto.LogoutRequestDto
+import com.financetracker.network.dto.RegisterRequestDto
+import com.financetracker.network.service.AuthApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json

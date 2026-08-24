@@ -1,7 +1,7 @@
 package com.financetracker.data.mapper
 
-import com.rumir.database.entity.TransactionEntity
-import com.rumir.network.dto.TransactionResponseDto
+import com.financetracker.database.entity.TransactionEntity
+import com.financetracker.network.dto.TransactionResponseDto
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
