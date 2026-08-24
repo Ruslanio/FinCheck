@@ -4,35 +4,56 @@
 Jetpack Compose personal finance tracker app. Offline-first, MVI architecture, biometric auth.
 
 ## Modules
-- :app          — Compose UI, NavHost, Hilt entry point, MainActivity
-- :core:data    — Repositories, Room DB, WorkManager, Retrofit/Ktor client
-- :core:ui      — Shared composables, design tokens, theme
+- `:app`                — NavGraph, MainActivity, Hilt entry point
+- `:core:data`          — Repositories, mappers, domain models; depends on :core:database and :core:network
+- `:core:database`      — Room DB, DAOs, entities only — no repositories here
+- `:core:network`       — Retrofit interfaces, DTOs only — no repositories here
+- `:core:sync`          — WorkManager workers only — no repositories here
+- `:core:ui`            — Shared composables, design tokens, theme
+- `:feature:auth`       — Login/Register screens + AuthNavigation
+- `:feature:home`       — Home screen + HomeNavigation
+- `:feature:profile`    — Profile screen + ProfileNavigation
+- `:feature:transactions` — Transaction list + TransactionNavigation
+
+## Module boundaries — critical rules
+- Repositories live exclusively in `:core:data`. Never create a repository in `:core:database`, `:core:network`, or `:core:sync`.
+- `:core:database`, `:core:network`, and `:core:sync` must not depend on each other.
+- Feature modules must not depend on other feature modules.
+- `:app` is the only module allowed to depend on all feature modules.
 
 ## Architecture
 - Pattern: MVI. Every screen has: UiState (sealed), UiEvent, ViewModel.
 - State: StateFlow for UI state, SharedFlow for one-shot events (navigation, toasts).
 - DI: Hilt. All ViewModels are @HiltViewModel. No manual factory boilerplate.
 - Async: Coroutines + Flow only. No RxJava, no GlobalScope, no runBlocking in prod code.
-- Navigation: single NavHost in AppNavGraph.kt. Destinations are typesafe sealed objects.
+
+## Navigation
+- There are two NavHosts: one in `AppNavGraph` (auth vs main split) and one inside `MainScreen` (bottom-nav tabs).
+- NavController is created at NavHost level only (`rememberNavController()`). Never pass a NavController below the NavHost — pass lambdas instead.
+- Each feature module exposes a NavGraphBuilder extension (e.g. `authGraph(...)`, `transactionsGraph(...)`) plus `navigateTo*` extension functions on NavController.
+- Destinations are typesafe `@Serializable` objects or data classes.
 
 ## UI conventions
 - Compose only. No XML layouts, no View system.
 - All strings in strings.xml. No hardcoded text in composables.
-- Shared components live in :core:ui. Never create a one-off composable in :app directly.
+- Shared components live in `:core:ui`. Feature-specific components live inside their own feature module.
 - Theme tokens (colors, typography, spacing) come from FinanceTrackerTheme — no raw Color() calls.
 
 ## Data layer
-- Single source of truth: Room. Network is a sync source, never read directly by UI.
-- All repositories live in :core:data/repository/.
-- WorkManager handles background sync. No foreground service for sync.
-- Retrofit interface lives in :core:data/network/. One interface per backend service domain.
+- Single source of truth: Room (`:core:database`). Network is a sync source, never read directly by UI.
+- Repositories in `:core:data` coordinate between DAOs and API services.
+- WorkManager handles background sync (`:core:sync`). No foreground service for sync.
+- Network: one Retrofit interface per backend service domain, in `:core:network/service/`.
 
 ## Key files
-- AppNavGraph.kt            — all navigation destinations
-- core/data/repository/     — one file per domain (Auth, Transaction, User)
-- core/data/network/        — Retrofit interfaces + DTOs
-- core/data/local/          — Room DAOs + entities
-- app/di/AppModule.kt       — top-level Hilt bindings
+- `app/.../navigation/AppNavGraph.kt`          — top-level NavHost (auth vs main)
+- `app/.../ui/main/MainScreen.kt`              — bottom-nav NavHost
+- `core/data/repository/`                      — one file per domain (Auth, Transaction)
+- `core/network/service/`                      — Retrofit interfaces
+- `core/network/dto/`                          — DTOs
+- `core/database/dao/`                         — Room DAOs
+- `core/database/entity/`                      — Room entities
+- `app/di/AppModule.kt`                        — top-level Hilt bindings
 
 ## Backend connection
 - Base URL configured via BuildConfig.BASE_URL (set in local.properties, not committed).
@@ -48,5 +69,5 @@ Jetpack Compose personal finance tracker app. Offline-first, MVI architecture, b
 - Use GlobalScope anywhere.
 - Add Gradle dependencies without updating libs.versions.toml first.
 - Commit local.properties or any file containing BASE_URL or API keys.
-- Leave TODO comments in committed code — open a GitHub issue instead.
 - Call the network layer directly from a ViewModel — always go through a Repository.
+- Pass NavController below the NavHost level — use lambdas.

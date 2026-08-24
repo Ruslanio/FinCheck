@@ -15,10 +15,18 @@ interface TransactionRepository {
         idempotencyKey: String?,
     ): CreateResult
 
+    suspend fun syncTransactions(): SyncResult
+
     sealed interface CreateResult {
         data class Success(val transaction: TransactionUiModel) : CreateResult
         data class Duplicate(val transaction: TransactionUiModel) : CreateResult
         data class Error(val message: String) : CreateResult
         data object NetworkError : CreateResult
+    }
+
+    sealed interface SyncResult {
+        data object Success : SyncResult
+        data object Retry : SyncResult
+        data object Failure : SyncResult
     }
 }
