@@ -10,10 +10,26 @@ Jetpack Compose personal finance tracker app. Offline-first, MVI architecture, b
 - `:core:network`       — Retrofit interfaces, DTOs only — no repositories here
 - `:core:sync`          — WorkManager workers only — no repositories here
 - `:core:ui`            — Shared composables, design tokens, theme
-- `:feature:auth`       — Login/Register screens + AuthNavigation
-- `:feature:home`       — Home screen + HomeNavigation
-- `:feature:profile`    — Profile screen + ProfileNavigation
-- `:feature:transactions` — Transaction list + TransactionNavigation
+- `:feature:auth`            — Login/Register screens + AuthNavigation
+- `:feature:home`            — Home screen + HomeNavigation
+- `:feature:profile`         — Profile screen + ProfileNavigation
+- `:feature:transactions`    — Transaction list + TransactionNavigation
+- `:feature:add-transaction` — AddTransactionFab, AddTransactionSheet, AddTransactionViewModel
+
+## Adding add-transaction to any screen
+Use `AddTransactionFab()` in the screen's `floatingActionButton` slot. The FAB owns sheet
+visibility state and its own `AddTransactionViewModel` instance. The host screen must provide
+`LocalSnackbarHostState` via `CompositionLocalProvider` so the FAB can surface snackbars:
+
+```kotlin
+val snackbarHostState = remember { SnackbarHostState() }
+CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        floatingActionButton = { AddTransactionFab() },
+    ) { ... }
+}
+```
 
 ## Module boundaries — critical rules
 - Repositories live exclusively in `:core:data`. Never create a repository in `:core:database`, `:core:network`, or `:core:sync`.

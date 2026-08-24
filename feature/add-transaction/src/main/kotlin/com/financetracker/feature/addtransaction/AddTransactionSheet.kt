@@ -1,4 +1,4 @@
-package com.financetracker.transactions.components
+package com.financetracker.feature.addtransaction
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.financetracker.transactions.R
+
+val TRANSACTION_CATEGORIES = listOf(
+    "Food", "Transport", "Shopping", "Health",
+    "Entertainment", "Housing", "Income", "Other",
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

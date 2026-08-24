@@ -1,12 +1,12 @@
-package com.financetracker.transactions.ui
+package com.financetracker.feature.addtransaction
 
 import com.financetracker.data.model.TransactionUiModel
 
-sealed interface TransactionListUiState {
-    data object Idle : TransactionListUiState
-    data object Loading : TransactionListUiState
-    data class Error(val message: String) : TransactionListUiState
-    data object Success : TransactionListUiState
+sealed interface AddTransactionUiState {
+    data object Idle : AddTransactionUiState
+    data object Loading : AddTransactionUiState
+    data class Error(val message: String) : AddTransactionUiState
+    data object Success : AddTransactionUiState
 }
 
 sealed interface AddTransactionEvent {
