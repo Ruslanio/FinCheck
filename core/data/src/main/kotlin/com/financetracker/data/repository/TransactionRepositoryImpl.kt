@@ -55,6 +55,46 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun syncTransactions(): TransactionRepository.SyncResult {
+        val token = tokenStorage.getAccessToken()
+            ?: return TransactionRepository.SyncResult.Failure
+        val userId = tokenStorage.getUserId()
+            ?: return TransactionRepository.SyncResult.Failure
+
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                val latestTimestamp = dao.getLatestTimestamp(userId)
+
+                val response = api.getTransactions(
+                    token = "Bearer $token",
+                    page = 0,
+                    size = 50,
+                    category = null,
+                )
+
+                if (!response.isSuccessful) {
+                    return@withContext TransactionRepository.SyncResult.Retry
+                }
+
+                val newEntities = with(TransactionMapper) {
+                    response.body()!!.data
+                        .map { it.toEntity() }
+                        .filter { entity ->
+                            latestTimestamp == null || entity.occurredAt > latestTimestamp
+                        }
+                }
+
+                if (newEntities.isNotEmpty()) {
+                    dao.upsertAll(newEntities)
+                }
+
+                TransactionRepository.SyncResult.Success
+            }.getOrElse {
+                TransactionRepository.SyncResult.Retry
+            }
+        }
+    }
+
     override suspend fun createTransaction(
         amount: Double,
         category: String,
