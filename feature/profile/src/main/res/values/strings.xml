@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="label_logout">Log out</string>
+    <string name="label_app_lock">App lock</string>
+    <string name="label_app_lock_unavailable">Not available on this device</string>
 </resources>

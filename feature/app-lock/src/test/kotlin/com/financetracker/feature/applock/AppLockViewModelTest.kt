@@ -2,13 +2,17 @@ package com.financetracker.feature.applock
 
 import androidx.biometric.BiometricPrompt
 import com.financetracker.core.security.BiometricAuthManager
+import com.financetracker.data.repository.AppLockRepository
 import com.financetracker.data.repository.AuthRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -23,6 +27,7 @@ class AppLockViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private val biometricAuthManager = mockk<BiometricAuthManager>()
     private val authRepository = mockk<AuthRepository>()
+    private val appLockRepository = mockk<AppLockRepository>()
     private lateinit var viewModel: AppLockViewModel
 
     @Before
@@ -30,7 +35,8 @@ class AppLockViewModelTest {
         Dispatchers.setMain(testDispatcher)
         every { authRepository.isUserLoggedIn() } returns true
         every { biometricAuthManager.canAuthenticate() } returns true
-        viewModel = AppLockViewModel(biometricAuthManager, authRepository)
+        every { appLockRepository.isBiometricLockEnabled } returns flowOf(true)
+        viewModel = AppLockViewModel(biometricAuthManager, authRepository, appLockRepository)
     }
 
     @After
@@ -39,8 +45,9 @@ class AppLockViewModelTest {
     }
 
     @Test
-    fun `onAppForeground not logged in returns false and state is Unavailable`() {
+    fun `onAppForeground not logged in returns false and state is Unavailable`() = runTest {
         every { authRepository.isUserLoggedIn() } returns false
+        advanceUntilIdle()
 
         val result = viewModel.onAppForeground()
 
@@ -49,8 +56,22 @@ class AppLockViewModelTest {
     }
 
     @Test
-    fun `onAppForeground canAuthenticate false returns false and state is Unavailable`() {
+    fun `onAppForeground biometric preference disabled returns false without changing state`() = runTest {
+        val disabledRepo = mockk<AppLockRepository>()
+        every { disabledRepo.isBiometricLockEnabled } returns flowOf(false)
+        val vm = AppLockViewModel(biometricAuthManager, authRepository, disabledRepo)
+        advanceUntilIdle()
+
+        val result = vm.onAppForeground()
+
+        assertFalse(result)
+        assertEquals(BiometricState.Idle, vm.state.value)
+    }
+
+    @Test
+    fun `onAppForeground canAuthenticate false returns false and state is Unavailable`() = runTest {
         every { biometricAuthManager.canAuthenticate() } returns false
+        advanceUntilIdle()
 
         val result = viewModel.onAppForeground()
 
@@ -59,7 +80,9 @@ class AppLockViewModelTest {
     }
 
     @Test
-    fun `onAppForeground first call with default backgroundTimestamp returns true and state is Authenticating`() {
+    fun `onAppForeground first call with default backgroundTimestamp returns true and state is Authenticating`() = runTest {
+        advanceUntilIdle()
+
         val result = viewModel.onAppForeground()
 
         assertTrue(result)
@@ -67,7 +90,8 @@ class AppLockViewModelTest {
     }
 
     @Test
-    fun `onAppForeground within 30s of last auth returns false and state is Authenticated`() {
+    fun `onAppForeground within 30s of last auth returns false and state is Authenticated`() = runTest {
+        advanceUntilIdle()
         viewModel.onAuthSuccess()
 
         val result = viewModel.onAppForeground()
@@ -77,7 +101,8 @@ class AppLockViewModelTest {
     }
 
     @Test
-    fun `onAppForeground background under 30s returns false and state is Authenticated`() {
+    fun `onAppForeground background under 30s returns false and state is Authenticated`() = runTest {
+        advanceUntilIdle()
         viewModel.onAppBackground()
 
         val result = viewModel.onAppForeground()
@@ -87,7 +112,9 @@ class AppLockViewModelTest {
     }
 
     @Test
-    fun `onAppForeground background over 30s not recently authed returns true and state is Authenticating`() {
+    fun `onAppForeground background over 30s not recently authed returns true and state is Authenticating`() = runTest {
+        advanceUntilIdle()
+
         // backgroundTimestamp = 0 by default → duration >> 30s
         val result = viewModel.onAppForeground()
 
