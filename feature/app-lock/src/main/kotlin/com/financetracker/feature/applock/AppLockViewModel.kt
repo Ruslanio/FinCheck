@@ -2,22 +2,34 @@ package com.financetracker.feature.applock
 
 import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.financetracker.core.security.BiometricAuthManager
+import com.financetracker.data.repository.AppLockRepository
 import com.financetracker.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class AppLockViewModel @Inject constructor(
     private val biometricAuthManager: BiometricAuthManager,
     private val authRepository: AuthRepository,
+    private val appLockRepository: AppLockRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<BiometricState>(BiometricState.Idle)
     val state: StateFlow<BiometricState> = _state.asStateFlow()
+
+    private val biometricLockEnabled: StateFlow<Boolean> =
+        appLockRepository.isBiometricLockEnabled.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = false,
+        )
 
     private var lastAuthTimestamp = 0L
     private var backgroundTimestamp = 0L
@@ -29,6 +41,9 @@ class AppLockViewModel @Inject constructor(
     fun onAppForeground(): Boolean {
         if (!authRepository.isUserLoggedIn()) {
             _state.value = BiometricState.Unavailable
+            return false
+        }
+        if (!biometricLockEnabled.value) {
             return false
         }
         if (!biometricAuthManager.canAuthenticate()) {

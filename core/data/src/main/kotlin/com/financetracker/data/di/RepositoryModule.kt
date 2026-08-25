@@ -1,5 +1,7 @@
 package com.financetracker.data.di
 
+import com.financetracker.data.repository.AppLockRepository
+import com.financetracker.data.repository.AppLockRepositoryImpl
 import com.financetracker.data.repository.AuthRepository
 import com.financetracker.data.repository.AuthRepositoryImpl
 import com.financetracker.data.repository.TransactionRepository
@@ -13,6 +15,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindAppLockRepository(impl: AppLockRepositoryImpl): AppLockRepository
 
     @Binds
     @Singleton
