@@ -9,8 +9,8 @@ import androidx.biometric.BiometricPrompt
 import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.financetracker.core.security.AppLockViewModel
 import com.financetracker.core.ui.theme.FinanceTrackerTheme
+import com.financetracker.feature.applock.AppLockViewModel
 import com.financetracker.navigation.AppNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 

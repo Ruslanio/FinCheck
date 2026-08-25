@@ -1,4 +1,4 @@
-package com.financetracker.core.security
+package com.financetracker.feature.applock
 
 sealed interface BiometricState {
     data object Idle : BiometricState

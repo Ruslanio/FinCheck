@@ -44,7 +44,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
     implementation(project(":core:sync"))
-    implementation(project(":core:security"))
+    implementation(project(":feature:app-lock"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)

@@ -1,4 +1,4 @@
-package com.financetracker.core.security
+package com.financetracker.feature.applock
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

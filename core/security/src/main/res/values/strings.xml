@@ -2,8 +2,4 @@
 <resources>
     <string name="biometric_prompt_title">Verify it\'s you</string>
     <string name="biometric_prompt_subtitle">Use biometrics or device PIN to continue</string>
-    <string name="label_auth_failed">Authentication failed — try again</string>
-    <string name="label_verifying_identity">Verifying identity…</string>
-    <string name="label_app_locked">App locked</string>
-    <string name="label_try_again">Try again</string>
 </resources>

@@ -1,7 +1,8 @@
-package com.financetracker.core.security
+package com.financetracker.feature.applock
 
 import androidx.biometric.BiometricPrompt
-import com.financetracker.data.storage.TokenStorage
+import com.financetracker.core.security.BiometricAuthManager
+import com.financetracker.data.repository.AuthRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -21,15 +22,15 @@ class AppLockViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
     private val biometricAuthManager = mockk<BiometricAuthManager>()
-    private val tokenStorage = mockk<TokenStorage>()
+    private val authRepository = mockk<AuthRepository>()
     private lateinit var viewModel: AppLockViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        every { tokenStorage.hasValidToken() } returns true
+        every { authRepository.isUserLoggedIn() } returns true
         every { biometricAuthManager.canAuthenticate() } returns true
-        viewModel = AppLockViewModel(biometricAuthManager, tokenStorage)
+        viewModel = AppLockViewModel(biometricAuthManager, authRepository)
     }
 
     @After
@@ -38,8 +39,8 @@ class AppLockViewModelTest {
     }
 
     @Test
-    fun `onAppForeground no valid token returns false and state is Unavailable`() {
-        every { tokenStorage.hasValidToken() } returns false
+    fun `onAppForeground not logged in returns false and state is Unavailable`() {
+        every { authRepository.isUserLoggedIn() } returns false
 
         val result = viewModel.onAppForeground()
 
@@ -59,7 +60,6 @@ class AppLockViewModelTest {
 
     @Test
     fun `onAppForeground first call with default backgroundTimestamp returns true and state is Authenticating`() {
-        // backgroundTimestamp = 0 by default → duration = currentTime >> 30s
         val result = viewModel.onAppForeground()
 
         assertTrue(result)
@@ -68,8 +68,6 @@ class AppLockViewModelTest {
 
     @Test
     fun `onAppForeground within 30s of last auth returns false and state is Authenticated`() {
-        // backgroundTimestamp = 0 → background duration >> 30s, so grace period check fails
-        // but recentlyAuthed is true since we just called onAuthSuccess
         viewModel.onAuthSuccess()
 
         val result = viewModel.onAppForeground()
@@ -80,9 +78,8 @@ class AppLockViewModelTest {
 
     @Test
     fun `onAppForeground background under 30s returns false and state is Authenticated`() {
-        viewModel.onAppBackground() // sets backgroundTimestamp to now
+        viewModel.onAppBackground()
 
-        // Immediately call onAppForeground — elapsed ≈ 0ms < 30s grace period
         val result = viewModel.onAppForeground()
 
         assertFalse(result)
@@ -90,8 +87,8 @@ class AppLockViewModelTest {
     }
 
     @Test
-    fun `onAppForeground background over 30s returns true and state is Authenticating`() {
-        // backgroundTimestamp is 0 (never set via onAppBackground) → duration is very large
+    fun `onAppForeground background over 30s not recently authed returns true and state is Authenticating`() {
+        // backgroundTimestamp = 0 by default → duration >> 30s
         val result = viewModel.onAppForeground()
 
         assertTrue(result)

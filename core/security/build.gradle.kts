@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
@@ -20,21 +19,9 @@ android {
 }
 
 dependencies {
-    // api so :app gets BiometricPrompt.PromptInfo without a direct dep in app's build file
+    // api so consumers (:feature:app-lock, :app) get BiometricPrompt types transitively
     api(libs.androidx.biometric)
-
-    implementation(project(":core:data"))
-
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    ksp(libs.androidx.hilt.compiler)
-
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.turbine)
-    testImplementation(libs.kotlinx.coroutines.test)
 }

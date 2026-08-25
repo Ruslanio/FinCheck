@@ -1,10 +1,7 @@
 package com.financetracker.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,13 +12,14 @@ import com.financetracker.auth.navigation.authGraph
 import com.financetracker.auth.navigation.navigateToAuth
 import com.financetracker.auth.navigation.navigateToLogin
 import com.financetracker.auth.navigation.navigateToRegister
-import com.financetracker.core.security.AppLockScreen
-import com.financetracker.core.security.BiometricState
+import com.financetracker.feature.applock.BiometricState
+import com.financetracker.feature.applock.navigation.AppLockRoute
+import com.financetracker.feature.applock.navigation.appLockScreen
+import com.financetracker.feature.applock.navigation.navigateToAppLock
 import com.financetracker.ui.StartupViewModel
 import com.financetracker.ui.main.MainScreen
 import com.financetracker.ui.main.navigation.MainGraph
 import com.financetracker.ui.main.navigation.navigateToMain
-
 
 @Composable
 fun AppNavGraph(
@@ -35,33 +33,31 @@ fun AppNavGraph(
         if (startupViewModel.isUserLoggedIn()) MainGraph else AuthGraph
 
     LaunchedEffect(lockState) {
-        if (lockState is BiometricState.Locked) {
-            navController.navigateToAuth()
-            onLockedNavigate()
+        when (lockState) {
+            BiometricState.Authenticating -> navController.navigateToAppLock()
+            BiometricState.Authenticated -> navController.popBackStack(AppLockRoute, inclusive = true)
+            BiometricState.Locked -> {
+                navController.navigateToAuth()
+                onLockedNavigate()
+            }
+            else -> {}
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        FinanceCheckNavHost(
-            navController = navController,
-            startDestination = startDestination,
-        )
-
-        if (lockState is BiometricState.Authenticating ||
-            lockState is BiometricState.Failed
-        ) {
-            AppLockScreen(
-                state = lockState,
-                onRetry = onRetryAuth,
-            )
-        }
-    }
+    FinanceCheckNavHost(
+        navController = navController,
+        startDestination = startDestination,
+        lockState = lockState,
+        onRetryAuth = onRetryAuth,
+    )
 }
 
 @Composable
 fun FinanceCheckNavHost(
     navController: NavHostController,
     startDestination: Any,
+    lockState: BiometricState,
+    onRetryAuth: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -78,5 +74,9 @@ fun FinanceCheckNavHost(
                 navigateToAuth = { navController.navigateToAuth() },
             )
         }
+        appLockScreen(
+            lockState = lockState,
+            onRetry = onRetryAuth,
+        )
     }
 }

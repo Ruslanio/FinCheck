@@ -1,8 +1,9 @@
-package com.financetracker.core.security
+package com.financetracker.feature.applock
 
 import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.ViewModel
-import com.financetracker.data.storage.TokenStorage
+import com.financetracker.core.security.BiometricAuthManager
+import com.financetracker.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppLockViewModel @Inject constructor(
     private val biometricAuthManager: BiometricAuthManager,
-    private val tokenStorage: TokenStorage,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<BiometricState>(BiometricState.Idle)
@@ -26,7 +27,7 @@ class AppLockViewModel @Inject constructor(
     }
 
     fun onAppForeground(): Boolean {
-        if (!tokenStorage.hasValidToken()) {
+        if (!authRepository.isUserLoggedIn()) {
             _state.value = BiometricState.Unavailable
             return false
         }
