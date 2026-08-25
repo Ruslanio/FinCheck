@@ -1,4 +1,4 @@
-package com.financetracker.core.ui.components.piechart
+package com.financetracker.core.ui.components.donutchart
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -28,19 +28,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Ui component responsible for drawing Pie chart
- * @param data - data to be presented as a pie chart. IMPORTANT - amount values should sum up to 100
- * @param label - main label to show in the middle of the pie chart
- * @param secondaryLabel - secondary label to show in the middle of the pie chart, below main one
- * @param attributes - various attributes to customize pie chart behavior and appearance
+ * Ui component responsible for drawing Donut chart
+ * @param data - data to be presented as a Donut chart. IMPORTANT - amount values should sum up to 100
+ * @param label - main label to show in the middle of the Donut chart
+ * @param secondaryLabel - secondary label to show in the middle of the Donut chart, below main one
+ * @param attributes - various attributes to customize Donut chart behavior and appearance
  */
 @Composable
-fun PieChart(
+fun DonutChart(
     modifier: Modifier = Modifier,
-    data: List<PieChartEntry>,
+    data: List<DonutChartEntry>,
     label: String,
     secondaryLabel: String? = null,
-    attributes: PieChartAttributes = PieChartAttributes()
+    attributes: DonutChartAttributes = DonutChartAttributes()
 ) {
 
     val calculatedEntries = calculateAnimatableValues(data)
@@ -100,7 +100,7 @@ private fun DrawScope.drawLabels(
     labelLayoutResult: TextLayoutResult,
     secondaryLabel: String? = null,
     secondaryLayoutResult: TextLayoutResult? = null,
-    attributes: PieChartAttributes
+    attributes: DonutChartAttributes
 ) {
     val isSecondaryPresent = secondaryLabel != null && secondaryLayoutResult != null
 
@@ -130,7 +130,7 @@ private fun DrawScope.drawLabels(
 
 private fun DrawScope.drawArcs(
     data: List<CalculatedEntry>,
-    attributes: PieChartAttributes
+    attributes: DonutChartAttributes
 ) {
     data.forEach {
         drawArc(
@@ -149,7 +149,7 @@ private fun DrawScope.drawArcs(
 
 @Composable
 private fun calculateAnimatableValues(
-    data: List<PieChartEntry>,
+    data: List<DonutChartEntry>,
 ): List<CalculatedEntry> {
     var sweepAngle = 0f
     var startAngle = 0f
@@ -191,7 +191,7 @@ private fun CoroutineScope.runAnimations(
     }
 }
 
-data class PieChartEntry(
+data class DonutChartEntry(
     val color: Color,
     val amount: Float
 )
@@ -206,16 +206,16 @@ private data class CalculatedEntry(
 
 @Preview
 @Composable
-private fun PieChartPreview() {
-    PieChart(
+private fun DonutChartPreview() {
+    DonutChart(
         label = "SPENT",
         secondaryLabel = "$ 2.345",
         data = listOf(
-            PieChartEntry(color = Color.Red, amount = 15f),
-            PieChartEntry(color = Color.Yellow, amount = 30f),
-            PieChartEntry(color = Color.Blue, amount = 20f),
-            PieChartEntry(color = Color.Magenta, amount = 15f),
-            PieChartEntry(color = Color.Green, amount = 20f),
+            DonutChartEntry(color = Color.Red, amount = 15f),
+            DonutChartEntry(color = Color.Yellow, amount = 30f),
+            DonutChartEntry(color = Color.Blue, amount = 20f),
+            DonutChartEntry(color = Color.Magenta, amount = 15f),
+            DonutChartEntry(color = Color.Green, amount = 20f),
         )
     )
 }
