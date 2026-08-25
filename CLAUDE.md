@@ -9,6 +9,8 @@ Jetpack Compose personal finance tracker app. Offline-first, MVI architecture, b
 - `:core:database`      — Room DB, DAOs, entities only — no repositories here
 - `:core:network`       — Retrofit interfaces, DTOs only — no repositories here
 - `:core:sync`          — WorkManager workers only — no repositories here
+- `:core:security`      — BiometricAuthManager only; biometric hardware check and PromptInfo builder
+- `:feature:app-lock`   — BiometricState, AppLockViewModel, AppLockScreen, AppLockNavigation
 - `:core:ui`            — Shared composables, design tokens, theme
 - `:feature:auth`            — Login/Register screens + AuthNavigation
 - `:feature:home`            — Home screen + HomeNavigation
@@ -31,11 +33,23 @@ CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
 }
 ```
 
+## Biometric auth gate
+- `AppLockViewModel` evaluates whether to show the prompt; `MainActivity` calls `showBiometricPrompt()` which creates `BiometricPrompt` (requires `FragmentActivity` — `MainActivity` extends `AppCompatActivity` for this reason).
+- **Never** call `setNegativeButtonText` on `PromptInfo` when `DEVICE_CREDENTIAL` is in `allowedAuthenticators` — causes `IllegalArgumentException` at runtime on all API levels.
+- `AppLockScreen` overlay sits above the `NavHost` in Z-order (Box with NavHost first, overlay second).
+- The 30-second grace period is checked via `backgroundTimestamp` set in `onPause()`, not a timer.
+
 ## Module boundaries — critical rules
 - Repositories live exclusively in `:core:data`. Never create a repository in `:core:database`, `:core:network`, or `:core:sync`.
 - `:core:database`, `:core:network`, and `:core:sync` must not depend on each other.
 - Feature modules must not depend on other feature modules.
 - `:app` is the only module allowed to depend on all feature modules.
+- **DataSources (e.g. `TokenStorage`, DAOs) must never be injected into ViewModels directly.** All ViewModel interactions go through a Repository. DAOs and raw storage classes are internal to `:core:data` and `:core:database`.
+
+## Navigation
+- Every feature module that participates in the nav graph owns a `navigation/` package that declares its route(s) and exposes `NavController` extension functions (`navigateTo*`) and `NavGraphBuilder` extensions (`*Graph`, `*Screen`).
+- `:app`'s `AppNavGraph` wires feature navigation together — it does not duplicate route definitions.
+- `NavController` is created at the NavHost level and never passed below it. Pass lambdas instead.
 
 ## Architecture
 - Pattern: MVI. Every screen has: UiState (sealed), UiEvent, ViewModel.
@@ -45,8 +59,6 @@ CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
 
 ## Navigation
 - There are two NavHosts: one in `AppNavGraph` (auth vs main split) and one inside `MainScreen` (bottom-nav tabs).
-- NavController is created at NavHost level only (`rememberNavController()`). Never pass a NavController below the NavHost — pass lambdas instead.
-- Each feature module exposes a NavGraphBuilder extension (e.g. `authGraph(...)`, `transactionsGraph(...)`) plus `navigateTo*` extension functions on NavController.
 - Destinations are typesafe `@Serializable` objects or data classes.
 
 ## UI conventions

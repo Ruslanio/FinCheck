@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_auth_failed">Authentication failed — try again</string>
+    <string name="label_verifying_identity">Verifying identity…</string>
+    <string name="label_app_locked">App locked</string>
+    <string name="label_try_again">Try again</string>
+</resources>
