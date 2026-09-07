@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.financetracker.database.AppDatabase
+import com.financetracker.database.entity.CategoryEntity
 import com.financetracker.database.entity.TransactionEntity
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -120,7 +121,40 @@ class TransactionDaoTest {
             PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false),
         ) as PagingSource.LoadResult.Page
 
-        assertEquals(listOf(newer, older), result.data)
+        assertEquals("t2", result.data.first().id)
+        assertEquals("t1", result.data.last().id)
+    }
+
+    // endregion
+
+    // region LEFT JOIN with categories
+
+    @Test
+    fun getTransactions_resolvesJoinedCategoryNameAndType() = runTest {
+        val categoryDao = db.categoryDao()
+        categoryDao.upsertAll(listOf(makeCategory(id = "cat-1", name = "Food", type = "expense")))
+        dao.upsertAll(listOf(makeEntity(id = "t1", userId = "u1", categoryId = "cat-1")))
+
+        val result = dao.getTransactions("u1").load(
+            PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false),
+        ) as PagingSource.LoadResult.Page
+
+        val row = result.data.first()
+        assertEquals("Food", row.categoryName)
+        assertEquals("expense", row.categoryType)
+    }
+
+    @Test
+    fun getTransactions_returnsNullCategoryFieldsWhenCategoryNotSynced() = runTest {
+        dao.upsertAll(listOf(makeEntity(id = "t1", userId = "u1", categoryId = "unknown-cat")))
+
+        val result = dao.getTransactions("u1").load(
+            PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false),
+        ) as PagingSource.LoadResult.Page
+
+        val row = result.data.first()
+        assertNull(row.categoryName)
+        assertNull(row.categoryType)
     }
 
     // endregion
@@ -129,7 +163,7 @@ class TransactionDaoTest {
         id: String = "test-id",
         userId: String = "u1",
         amount: Double = 100.0,
-        category: String = "food",
+        categoryId: String = "cat-default",
         description: String? = null,
         idempotencyKey: String? = null,
         occurredAt: Long = 1_000_000L,
@@ -138,10 +172,17 @@ class TransactionDaoTest {
         id = id,
         userId = userId,
         amount = amount,
-        category = category,
+        categoryId = categoryId,
         description = description,
         idempotencyKey = idempotencyKey,
         occurredAt = occurredAt,
         createdAt = createdAt,
     )
+
+    private fun makeCategory(
+        id: String = "cat-1",
+        name: String = "Food",
+        type: String = "expense",
+        isFallback: Boolean = false,
+    ) = CategoryEntity(id = id, name = name, type = type, isFallback = isFallback)
 }

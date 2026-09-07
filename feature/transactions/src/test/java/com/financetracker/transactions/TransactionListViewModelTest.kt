@@ -97,9 +97,10 @@ class TransactionListViewModelTest {
     private fun fakeTransaction() = TransactionUiModel(
         id = "t1",
         amount = 10.0,
-        category = "food",
+        categoryId = "cat-food",
+        categoryName = "Food",
+        categoryType = null,
         description = null,
         occurredAt = 1_000_000L,
-        isExpense = false,
     )
 }

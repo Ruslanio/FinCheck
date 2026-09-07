@@ -5,6 +5,7 @@ import com.financetracker.auth.ui.AuthUiState
 import com.financetracker.auth.ui.LoginViewModel
 import com.financetracker.data.repository.AuthRepository
 import com.financetracker.data.repository.AuthResult
+import com.financetracker.data.repository.CategoryRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -25,12 +26,14 @@ class LoginViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
     private val authRepository: AuthRepository = mockk()
+    private val categoryRepository: CategoryRepository = mockk()
     private lateinit var viewModel: LoginViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = LoginViewModel(authRepository)
+        coEvery { categoryRepository.syncCategories() } returns CategoryRepository.SyncResult.Success
+        viewModel = LoginViewModel(authRepository, categoryRepository)
     }
 
     @After
@@ -72,7 +75,6 @@ class LoginViewModelTest {
     fun `valid input emits Loading then Success`() = runTest {
         viewModel.email = "user@example.com"
         viewModel.password = "password123"
-        // delay(1) creates a suspension point so Loading is observable before Success
         coEvery { authRepository.login(any(), any()) } coAnswers {
             delay(1)
             AuthResult.Success

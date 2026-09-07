@@ -7,7 +7,7 @@ import androidx.paging.RemoteMediator
 import com.financetracker.data.mapper.TransactionMapper
 import com.financetracker.data.storage.TokenStorage
 import com.financetracker.database.dao.TransactionDao
-import com.financetracker.database.entity.TransactionEntity
+import com.financetracker.database.entity.TransactionWithCategory
 import com.financetracker.network.service.TransactionApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,13 +19,13 @@ class TransactionRemoteMediator(
     private val dao: TransactionDao,
     private val api: TransactionApiService,
     private val tokenStorage: TokenStorage,
-) : RemoteMediator<Int, TransactionEntity>() {
+) : RemoteMediator<Int, TransactionWithCategory>() {
 
     private var currentPage = 0
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, TransactionEntity>,
+        state: PagingState<Int, TransactionWithCategory>,
     ): MediatorResult {
         return withContext(Dispatchers.IO) {
             runCatching {

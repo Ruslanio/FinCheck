@@ -121,13 +121,13 @@ class TransactionRepositoryImpl @Inject constructor(
                         with(TransactionMapper) {
                             val entity = body.toEntity()
                             dao.upsertAll(listOf(entity))
-                            TransactionRepository.CreateResult.Success(entity.toUiModel())
+                            TransactionRepository.CreateResult.Success(entity.toUiModelStub())
                         }
                     }
                     response.code() == 200 -> {
                         val body = response.body()!!
                         with(TransactionMapper) {
-                            TransactionRepository.CreateResult.Duplicate(body.toEntity().toUiModel())
+                            TransactionRepository.CreateResult.Duplicate(body.toEntity().toUiModelStub())
                         }
                     }
                     else -> TransactionRepository.CreateResult.Error(

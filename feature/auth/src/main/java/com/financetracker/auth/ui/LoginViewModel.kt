@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.financetracker.data.repository.AuthRepository
 import com.financetracker.data.repository.AuthResult
+import com.financetracker.data.repository.CategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
     var email by mutableStateOf("")
@@ -36,7 +38,11 @@ class LoginViewModel @Inject constructor(
         }
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
-            _uiState.value = when (val result = authRepository.login(email, password)) {
+            val result = authRepository.login(email, password)
+            if (result == AuthResult.Success) {
+                launch { categoryRepository.syncCategories() }
+            }
+            _uiState.value = when (result) {
                 AuthResult.Success -> AuthUiState.Success
                 is AuthResult.Error -> AuthUiState.Error(result.message)
                 AuthResult.NetworkError -> AuthUiState.Error(ERROR_NETWORK)

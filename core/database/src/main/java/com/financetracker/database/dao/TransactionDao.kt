@@ -5,31 +5,40 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.financetracker.database.entity.TransactionEntity
+import com.financetracker.database.entity.TransactionWithCategory
 
 @Dao
 interface TransactionDao {
 
     @Query(
         """
-        SELECT * FROM transactions
-        WHERE userId = :userId
-        ORDER BY occurredAt DESC
+        SELECT t.id, t.userId, t.amount, t.categoryId, t.description, t.idempotencyKey,
+               t.occurredAt, t.createdAt,
+               c.name AS categoryName, c.type AS categoryType, c.isFallback AS categoryIsFallback
+        FROM transactions t
+        LEFT JOIN categories c ON t.categoryId = c.id
+        WHERE t.userId = :userId
+        ORDER BY t.occurredAt DESC
         """,
     )
-    fun getTransactions(userId: String): PagingSource<Int, TransactionEntity>
+    fun getTransactions(userId: String): PagingSource<Int, TransactionWithCategory>
 
     @Query(
         """
-        SELECT * FROM transactions
-        WHERE userId = :userId
-          AND LOWER(category) = LOWER(:category)
-        ORDER BY occurredAt DESC
+        SELECT t.id, t.userId, t.amount, t.categoryId, t.description, t.idempotencyKey,
+               t.occurredAt, t.createdAt,
+               c.name AS categoryName, c.type AS categoryType, c.isFallback AS categoryIsFallback
+        FROM transactions t
+        LEFT JOIN categories c ON t.categoryId = c.id
+        WHERE t.userId = :userId
+          AND LOWER(c.name) = LOWER(:categoryName)
+        ORDER BY t.occurredAt DESC
         """,
     )
     fun getTransactionsByCategory(
         userId: String,
-        category: String,
-    ): PagingSource<Int, TransactionEntity>
+        categoryName: String,
+    ): PagingSource<Int, TransactionWithCategory>
 
     @Upsert
     suspend fun upsertAll(transactions: List<TransactionEntity>)

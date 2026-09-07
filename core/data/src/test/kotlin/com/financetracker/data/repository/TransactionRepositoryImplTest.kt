@@ -115,7 +115,7 @@ class TransactionRepositoryImplTest {
         id = "1",
         userId = "u1",
         amount = 10.0,
-        category = "food",
+        categoryId = "cat-food",
         description = null,
         idempotencyKey = null,
         occurredAt = "2024-01-15T10:30:00Z",

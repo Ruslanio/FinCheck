@@ -24,14 +24,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.financetracker.core.ui.color.CategoryColors
+import com.financetracker.data.model.CategoryType
 import com.financetracker.data.model.TransactionUiModel
 
 @Composable
 fun TransactionRow(transaction: TransactionUiModel) {
-    val amountColor = if (transaction.isExpense) Color(0xFFE24B4A) else Color(0xFF1D9E75)
+    val isExpense = when (transaction.categoryType) {
+        CategoryType.INCOME -> false
+        CategoryType.EXPENSE -> true
+        null -> transaction.amount < 0
+    }
 
-    val formattedAmount = remember(transaction.amount) {
-        val prefix = if (transaction.isExpense) "-" else "+"
+    val amountColor = if (isExpense) Color(0xFFE24B4A) else Color(0xFF1D9E75)
+
+    val formattedAmount = remember(transaction.amount, isExpense) {
+        val prefix = if (isExpense) "-" else "+"
         "$prefix${"%.2f".format(kotlin.math.abs(transaction.amount))}"
     }
 
@@ -41,6 +49,12 @@ fun TransactionRow(transaction: TransactionUiModel) {
         val month = local.month.name.lowercase().replaceFirstChar { it.uppercase() }
         "${local.dayOfMonth} $month ${local.year}"
     }
+
+    val categoryColor = remember(transaction.categoryId) {
+        CategoryColors.forId(transaction.categoryId)
+    }
+
+    val displayLabel = transaction.description ?: transaction.categoryName ?: transaction.categoryId
 
     Row(
         modifier = Modifier
@@ -59,14 +73,14 @@ fun TransactionRow(transaction: TransactionUiModel) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                    .background(categoryColor.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector = categoryIcon(transaction.category),
-                    contentDescription = transaction.category,
+                    imageVector = categoryIcon(transaction.categoryName ?: ""),
+                    contentDescription = transaction.categoryName,
                     modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    tint = categoryColor,
                 )
             }
 
@@ -74,7 +88,7 @@ fun TransactionRow(transaction: TransactionUiModel) {
 
             Column {
                 Text(
-                    text = transaction.description ?: transaction.category,
+                    text = displayLabel,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,

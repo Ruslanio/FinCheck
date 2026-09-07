@@ -2,6 +2,7 @@ package com.financetracker.database
 
 import android.content.Context
 import androidx.room.Room
+import com.financetracker.database.dao.CategoryDao
 import com.financetracker.database.dao.TransactionDao
 import dagger.Module
 import dagger.Provides
@@ -23,9 +24,15 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "finance_tracker.db",
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     @Singleton
     fun provideTransactionDao(db: AppDatabase): TransactionDao = db.transactionDao()
+
+    @Provides
+    @Singleton
+    fun provideCategoryDao(db: AppDatabase): CategoryDao = db.categoryDao()
 }

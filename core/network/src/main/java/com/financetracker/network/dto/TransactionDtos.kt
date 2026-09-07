@@ -7,7 +7,7 @@ data class TransactionResponseDto(
     val id: String,
     val userId: String,
     val amount: Double,
-    val category: String,
+    val categoryId: String,
     val description: String?,
     val idempotencyKey: String?,
     val occurredAt: String,

@@ -4,6 +4,8 @@ import com.financetracker.data.repository.AppLockRepository
 import com.financetracker.data.repository.AppLockRepositoryImpl
 import com.financetracker.data.repository.AuthRepository
 import com.financetracker.data.repository.AuthRepositoryImpl
+import com.financetracker.data.repository.CategoryRepository
+import com.financetracker.data.repository.CategoryRepositoryImpl
 import com.financetracker.data.repository.TransactionRepository
 import com.financetracker.data.repository.TransactionRepositoryImpl
 import dagger.Binds
@@ -29,4 +31,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(impl: CategoryRepositoryImpl): CategoryRepository
 }

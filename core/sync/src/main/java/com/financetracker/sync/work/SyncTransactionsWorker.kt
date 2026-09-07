@@ -9,6 +9,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkRequest
 import androidx.work.WorkerParameters
+import com.financetracker.data.repository.CategoryRepository
 import com.financetracker.data.repository.TransactionRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -19,12 +20,20 @@ class SyncTransactionsWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val transactionRepository: TransactionRepository,
+    private val categoryRepository: CategoryRepository,
 ) : CoroutineWorker(context, workerParams) {
 
-    override suspend fun doWork(): Result = when (transactionRepository.syncTransactions()) {
-        TransactionRepository.SyncResult.Success -> Result.success()
-        TransactionRepository.SyncResult.Retry -> Result.retry()
-        TransactionRepository.SyncResult.Failure -> Result.failure()
+    override suspend fun doWork(): Result {
+        val categoryResult = categoryRepository.syncCategories()
+        val txResult = transactionRepository.syncTransactions()
+
+        return when {
+            txResult == TransactionRepository.SyncResult.Failure ||
+                categoryResult == CategoryRepository.SyncResult.Failure -> Result.failure()
+            txResult == TransactionRepository.SyncResult.Retry ||
+                categoryResult == CategoryRepository.SyncResult.Retry -> Result.retry()
+            else -> Result.success()
+        }
     }
 
     companion object {
